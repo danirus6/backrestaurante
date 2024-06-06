@@ -1,5 +1,3 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1628078126.
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:1462378340.
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 

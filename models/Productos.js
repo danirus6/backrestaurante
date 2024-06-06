@@ -1,4 +1,3 @@
-// Suggested code may be subject to a license. Learn more: ~LicenseLog:374583725.
 const mongoose = require('mongoose');
 const ProductosSchema = new mongoose.Schema({
   nombre: {
