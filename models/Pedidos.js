@@ -17,7 +17,7 @@ const PedidosSchema = new Schema({
   estado_pedido: {
     type: String,
     required: true,
-    enum: ['pendiente', 'en_preparacion', 'listo', 'entregado']
+    enum: ['pendiente', 'en_preparacion', 'listo', 'entregado'] //REVISAR
   },
   total_pedido: {
     type: Number,
