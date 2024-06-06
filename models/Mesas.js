@@ -16,9 +16,9 @@ const MesaSchema = new Schema({
     enum: ['libre', 'ocupada', 'reservada'],
     default: 'libre'
   },
-  cliente: {
+  usuario: {
     type: Schema.Types.ObjectId,
-    ref: 'Cliente'
+    ref: 'Usuario'
   },
   pedido: {
     type: Schema.Types.ObjectId,
