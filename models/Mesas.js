@@ -1,31 +1,27 @@
 const mongoose = require('mongoose');
+const ObjectId = mongoose.SchemaTypes.ObjectId
 const Schema = mongoose.Schema;
 
 const MesaSchema = new Schema({
-  numero: {
-    type: Number,
-    required: true,
-    unique: true
-  },
-  capacidad: {
-    type: Number,
-    required: true
-  },
-  estado: {
-    type: String,
-    enum: ['libre', 'ocupada', 'reservada'],
-    default: 'libre'
-  },
-  usuario: {
-    type: Schema.Types.ObjectId,
-    ref: 'Usuario'
-  },
-  pedido: {
-    type: Schema.Types.ObjectId,
-    ref: 'Pedido'
-  }
-});
+    Numero: {
+      type: Number,
+      required: true,
+      unique: true
+    },
+    Capacidad: {
+      type: Number,
+      required: true
+    },
+    Estado: {
+      type: String,
+      enum: ['libre', 'ocupada', 'reservada'],
+      default: 'libre'
+    },
+    IdPedido: { type: ObjectId, ref: 'Pedidos'},
+  }, 
+  { timestamps: true }
+);
 
-const Mesa = mongoose.model('Mesa', MesaSchema);
+const Mesas = mongoose.model('Mesas', MesaSchema);
 
-module.exports = Mesa;
+module.exports = Mesas;
