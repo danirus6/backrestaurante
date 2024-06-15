@@ -1,28 +1,23 @@
 // solicitamos acceso a la variable de entorno
 process.loadEnvFile()
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const MONGOURI = process.env.MONGO_URI
 
-
 const dbConnection = async () => {
-    console.log('mongo_urii: ', MONGOURI);
-
-    try {
+  console.log('mongouri:', MONGOURI)
+  try {
     await mongoose.connect(MONGOURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    });
-    console.log("Base de datos conectada con éxito");
-    } catch (error) {
-    
-    console.error(error);
-    
-    throw new Error("Error a la hora de iniciar la base de datos");
-    }
-    
-};
-    
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
+    console.log('Base de datos conectada con éxito')
+  } catch (error) {
+    console.error(error)
+    throw new Error('Error a la hora de iniciar la base de datos')
+  }
+}
+
 module.exports = {
-    dbConnection,
-};
+  dbConnection,
+}
