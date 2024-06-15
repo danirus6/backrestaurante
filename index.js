@@ -21,6 +21,8 @@ app.get('/api', (req, res) => {
   res.json({ msg: 'UN SALUDO A IKER' })
 })
 
+app.use(express.json())
+
 dbConnection()
 
 app.listen(port, () => {
