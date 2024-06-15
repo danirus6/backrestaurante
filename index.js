@@ -23,6 +23,8 @@ app.get('/api', (req, res) => {
 
 app.use(express.json())
 
+app.use('/clientes', require('./routes/clientes'))
+
 dbConnection()
 
 app.listen(port, () => {

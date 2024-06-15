@@ -1,116 +1,103 @@
-const { response } = require('express')
 const Clientes = require('../models/Clientes')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 
-// GET - Obtener todos los clientes
-const getClientes = async (req, res = response) => {
-  try {
-    const clientes = await Clientes.find()
-    res.json({
-      ok: true,
-      clientes,
-    })
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Por favor hable con el administrador',
-    })
-  }
-}
-// GET - Obtener un cliente por ID
-const getClienteById = async (req, res = response) => {
-  const clienteId = req.params.id
-  try {
-    const cliente = await Clientes.findById(clienteId)
-    if (!cliente) {
-      return res.status(404).json({
+const ClientesController = {
+  // GET - Obtener todos los clientes
+  async getClientes(req, res) {
+    try {
+      const clientes = await Clientes.find()
+      res.status(200).send(clientes)
+    } catch (error) {
+      console.error(error)
+      res.status(500).send('Por favor hable con el administrador')
+    }
+  },
+
+  // GET - Obtener un cliente por ID
+  async getClienteById(req, res) {
+    const clienteId = req.params.id
+    try {
+      const cliente = await Clientes.findById(clienteId)
+      if (!cliente) {
+        res.status(401).send('Cliente no encontrado por id')
+      }
+      res.status(200).send(cliente)
+    } catch (error) {
+      console.log(error)
+      res.status(500).send('Por favor hable con el administrador')
+    }
+  },
+
+  // POST - Crear un nuevo cliente
+  async crearCliente(req, res) {
+    try {
+      if (!req.body.Password)
+        res.status(400).send({ message: 'contraseña requerida' })
+      const password = bcrypt.hashSync(req.body.Password, 10)
+      const cliente = await Clientes.create({ ...req.body, password })
+      res.status(201).send({ message: 'usuario creado', cliente })
+    } catch (error) {
+      console.error(error)
+      res.status(500).send('Por favor hable con el administrador')
+    }
+  },
+
+  // PUT - Actualizar un cliente
+  async actualizarCliente(req, res) {
+    const clienteId = req.params.id
+    try {
+      const cliente = await Clientes.findById(clienteId)
+      if (!cliente) {
+        return res.status(404).json({
+          ok: false,
+          msg: 'Cliente no encontrado por id',
+        })
+      }
+      const nuevoCliente = {
+        ...req.body,
+      }
+      const clienteActualizado = await Clientes.findByIdAndUpdate(
+        clienteId,
+        nuevoCliente,
+        { new: true }
+      )
+      res.json({
+        ok: true,
+        cliente: clienteActualizado,
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
         ok: false,
-        msg: 'Cliente no encontrado por id',
+        msg: 'Por favor hable con el administrador',
       })
     }
-    res.json({
-      ok: true,
-      cliente,
-    })
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Por favor hable con el administrador',
-    })
-  }
-}
+  },
 
-// POST - Crear un nuevo cliente
-const crearCliente = async (req, res = response) => {
-  const cliente = new Clientes(req.body)
-  try {
-    const clienteGuardado = await Clientes.save()
-    res.json({
-      ok: true,
-      cliente: clienteGuardado,
-    })
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Por favor hable con el administrador',
-    })
-  }
-}
-
-// PUT - Actualizar un cliente
-const actualizarCliente = async (req, res = response) => {
-  const clienteId = req.params.id
-  try {
-    const cliente = await Clientes.findById(clienteId)
-    if (!cliente) {
-      return res.status(404).json({
+  // DELETE - Eliminar un cliente
+  async eliminarCliente(req, res) {
+    const clienteId = req.params.id
+    try {
+      const cliente = await Clientes.findById(clienteId)
+      if (!cliente) {
+        return res.status(404).json({
+          ok: false,
+          msg: 'Cliente no encontrado por id',
+        })
+      }
+      await Clientes.findByIdAndDelete(clienteId)
+      res.json({
+        ok: true,
+      })
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({
         ok: false,
-        msg: 'Cliente no encontrado por id',
+        msg: 'Por favor hable con el administrador',
       })
     }
-    const nuevoCliente = {
-      ...req.body,
-    }
-    const clienteActualizado = await Clientes.findByIdAndUpdate(
-      clienteId,
-      nuevoCliente,
-      { new: true }
-    )
-    res.json({
-      ok: true,
-      cliente: clienteActualizado,
-    })
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Por favor hable con el administrador',
-    })
-  }
+  },
 }
 
-// DELETE - Eliminar un cliente
-const eliminarCliente = async (req, res = response) => {
-  const clienteId = req.params.id
-  try {
-    const cliente = await Clientes.findById(clienteId)
-    if (!cliente) {
-      return res.status(404).json({
-        ok: false,
-        msg: 'Cliente no encontrado por id',
-      })
-    }
-    await Clientes.findByIdAndDelete(clienteId)
-    res.json({
-      ok: true,
-    })
-  } catch (error) {
-    console.log(error)
-    res.status(500).json({
-      ok: false,
-      msg: 'Por favor hable con el administrador',
-    })
-  }
-}
+module.exports = ClientesController
