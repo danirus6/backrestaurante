@@ -89,17 +89,22 @@ const ClientesController = {
   async eliminarCliente(req, res) {
     const clienteId = req.params.id
     try {
-      const cliente = await Clientes.findById(clienteId)
-      if (!cliente) {
-        return res.status(404).json({
-          ok: false,
-          msg: 'Cliente no encontrado por id',
-        })
-      }
-      await Clientes.findByIdAndDelete(clienteId)
-      res.json({
-        ok: true,
-      })
+      // const cliente = await Clientes.findById(clienteId)
+      // if (!cliente) {
+      //   return res.status(404).json({
+      //     ok: false,
+      //     msg: 'Cliente no encontrado por id',
+      //   })
+      // }
+      if (checkID(clienteId, res)) return
+      const clienteBorrado = await Clientes.findByIdAndDelete(clienteId)
+      console.log('cliente borrado', clienteBorrado)
+      clienteBorrado === null
+        ? res.status(400).send({ message: 'id de cliente no encontrado' })
+        : res.status(200).send({ messsage: 'cliente borrado' })
+      // res.json({
+      //   ok: true,
+      // })
     } catch (error) {
       console.log(error)
       res.status(500).json({
