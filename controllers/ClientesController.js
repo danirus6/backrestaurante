@@ -16,6 +16,13 @@ const checkID = (id, res) => {
     return res.status(401).send({ message: 'id de cliente erróneo' })
 }
 
+const checkEmailDuplicado = async (email, res) => {
+  // comprueba que el email no esté ya utilizado
+  const checkEmail = await Clientes.findOne({ Email: email })
+  if (checkEmail === null) return checkEmail
+  res.status(400).send({ message: 'email ya existente' })
+}
+
 const ClientesController = {
   // GET - Obtener todos los clientes
   async getClientes(req, res) {
@@ -48,7 +55,8 @@ const ClientesController = {
   // POST - Crear un nuevo cliente
   async crearCliente(req, res) {
     try {
-      if (checkData(req.body, res)) return
+      if (await checkData(req.body, res)) return
+      if ((await checkEmailDuplicado(req.body.Email, res)) !== null) return
       const password = bcrypt.hashSync(req.body.Password, 10)
       const cliente = await Clientes.create({ ...req.body, password })
       res.status(201).send({ message: 'usuario creado', cliente })
@@ -64,6 +72,11 @@ const ClientesController = {
 
     try {
       if (checkID(clienteId, res)) return
+      if (
+        req.body.Email &&
+        (await checkEmailDuplicado(req.body.Email, res)) !== null
+      )
+        return
       const nuevoCliente = {
         ...req.body,
       }
@@ -89,22 +102,11 @@ const ClientesController = {
   async eliminarCliente(req, res) {
     const clienteId = req.params.id
     try {
-      // const cliente = await Clientes.findById(clienteId)
-      // if (!cliente) {
-      //   return res.status(404).json({
-      //     ok: false,
-      //     msg: 'Cliente no encontrado por id',
-      //   })
-      // }
       if (checkID(clienteId, res)) return
       const clienteBorrado = await Clientes.findByIdAndDelete(clienteId)
-      console.log('cliente borrado', clienteBorrado)
       clienteBorrado === null
         ? res.status(400).send({ message: 'id de cliente no encontrado' })
         : res.status(200).send({ messsage: 'cliente borrado' })
-      // res.json({
-      //   ok: true,
-      // })
     } catch (error) {
       console.log(error)
       res.status(500).json({

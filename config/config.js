@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 const MONGOURI = process.env.MONGO_URI
 
 const dbConnection = async () => {
-  console.log('mongouri:', MONGOURI)
   try {
     await mongoose.connect(MONGOURI, {
       useNewUrlParser: true,

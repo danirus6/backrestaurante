@@ -28,8 +28,7 @@ const ClientesSchema = new Schema(
       type: String,
       default: 'false',
     },
-    // IdRestaurante debería ser obligatorio para el alta? cómo dar de alta restaurantes antes de tener un usuario?
-    IdRestaurante: { type: ObjectId, ref: 'Restaurantes', required: true },
+    IdRestaurante: { type: ObjectId, ref: 'Restaurantes' },
     IdPedido: [{ type: ObjectId, ref: 'Pedidos' }],
   },
   { timestamps: true }
