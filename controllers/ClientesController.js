@@ -31,7 +31,7 @@ const ClientesController = {
       res.status(200).send(clientes)
     } catch (error) {
       console.error(error)
-      res.status(500).send('Por favor hable con el administrador')
+      res.status(500).send({ message: 'Por favor hable con el administrador' })
     }
   },
 
@@ -43,12 +43,12 @@ const ClientesController = {
       if (checkID(clienteId, res)) return
       const cliente = await Clientes.findById(clienteId)
       if (!cliente) {
-        res.status(401).send('Cliente no encontrado por id')
+        res.status(401).send({ message: 'Cliente no encontrado por id' })
       }
       res.status(200).send(cliente)
     } catch (error) {
       console.log(error)
-      res.status(500).send('Por favor hable con el administrador')
+      res.status(500).send({ message: 'Por favor hable con el administrador' })
     }
   },
 
@@ -62,7 +62,7 @@ const ClientesController = {
       res.status(201).send({ message: 'usuario creado', cliente })
     } catch (error) {
       console.error(error)
-      res.status(500).send('Por favor hable con el administrador')
+      res.status(500).send({ message: 'Por favor hable con el administrador' })
     }
   },
 
@@ -91,10 +91,7 @@ const ClientesController = {
       })
     } catch (error) {
       console.log(error)
-      res.status(500).json({
-        ok: false,
-        msg: 'Por favor hable con el administrador',
-      })
+      res.status(500).send({ message: 'Por favor hable con el administrador' })
     }
   },
 
@@ -109,10 +106,7 @@ const ClientesController = {
         : res.status(200).send({ messsage: 'cliente borrado' })
     } catch (error) {
       console.log(error)
-      res.status(500).json({
-        ok: false,
-        msg: 'Por favor hable con el administrador',
-      })
+      res.status(500).send({ message: 'Por favor hable con el administrador' })
     }
   },
 }
