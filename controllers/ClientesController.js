@@ -1,27 +1,35 @@
 const Clientes = require('../models/Clientes')
+const {
+  checkID,
+  error500,
+  checkData,
+  checkEmailDuplicado,
+} = require('../middlewares/validations')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-const checkData = (data, res) => {
-  // comprueba que los datos obligatorios estén introducidos
-  if (!data.Password)
-    return res.status(400).send({ message: 'contraseña requerida' })
-  if (!data.Nombre) return res.status(400).send({ message: 'nombre requerido' })
-  if (!data.Email) return res.status(400).send({ message: 'email requerido' })
-}
+// const checkData = (collection, data, res) => {
+//   // comprueba que los datos obligatorios estén introducidos
+//   if (!data.Password && collection === 'Cliente')
+//     return res.status(400).send({ message: 'contraseña requerida' })
+//   if (!data.Nombre) return res.status(400).send({ message: 'nombre requerido' })
+//   if (!data.Email) return res.status(400).send({ message: 'email requerido' })
+//   if (!data.Calle && collection === 'Restaurante')
+//     return res.status(400).send({ message: 'Calle requerida' })
+//   if (!data.CP && collection === 'Restaurante')
+//     return res.status(400).send({ message: 'CP requerido' })
+//   if (!data.Ciudad && collection === 'Restaurante')
+//     return res.status(400).send({ message: 'Ciudad requerida' })
+//   if (!data.Provincia && collection === 'Restaurante')
+//     return res.status(400).send({ message: 'Provincia requerida' })
+// }
 
-const checkID = (id, res) => {
-  // comprueba que el id tenga la longitud adecuada
-  if (id === undefined || id.length !== 24)
-    return res.status(401).send({ message: 'id de cliente erróneo' })
-}
-
-const checkEmailDuplicado = async (email, res) => {
-  // comprueba que el email no esté ya utilizado
-  const checkEmail = await Clientes.findOne({ Email: email })
-  if (checkEmail === null) return checkEmail
-  res.status(400).send({ message: 'email ya existente' })
-}
+// const checkEmailDuplicado = async (email, res) => {
+//   // comprueba que el email no esté ya utilizado
+//   const checkEmail = await Clientes.findOne({ Email: email })
+//   if (checkEmail === null) return checkEmail
+//   res.status(400).send({ message: 'email ya existente' })
+// }
 
 const ClientesController = {
   // GET - Obtener todos los clientes
@@ -30,8 +38,7 @@ const ClientesController = {
       const clientes = await Clientes.find()
       res.status(200).send(clientes)
     } catch (error) {
-      console.error(error)
-      res.status(500).send({ message: 'Por favor hable con el administrador' })
+      error500(error)
     }
   },
 
@@ -43,26 +50,25 @@ const ClientesController = {
       if (checkID(clienteId, res)) return
       const cliente = await Clientes.findById(clienteId)
       if (!cliente) {
-        res.status(401).send({ message: 'Cliente no encontrado por id' })
+        return res.status(401).send({ message: 'Cliente no encontrado por id' })
       }
       res.status(200).send(cliente)
     } catch (error) {
-      console.log(error)
-      res.status(500).send({ message: 'Por favor hable con el administrador' })
+      error500(error)
     }
   },
 
   // POST - Crear un nuevo cliente
   async crearCliente(req, res) {
     try {
-      if (await checkData(req.body, res)) return
-      if ((await checkEmailDuplicado(req.body.Email, res)) !== null) return
+      if (await checkData('Cliente', req.body, res)) return
+      if ((await checkEmailDuplicado('Cliente', req.body.Email, res)) !== null)
+        return
       const password = bcrypt.hashSync(req.body.Password, 10)
       const cliente = await Clientes.create({ ...req.body, password })
       res.status(201).send({ message: 'usuario creado', cliente })
     } catch (error) {
-      console.error(error)
-      res.status(500).send({ message: 'Por favor hable con el administrador' })
+      error500(error)
     }
   },
 
@@ -90,8 +96,7 @@ const ClientesController = {
         cliente: clienteActualizado,
       })
     } catch (error) {
-      console.log(error)
-      res.status(500).send({ message: 'Por favor hable con el administrador' })
+      error500(error)
     }
   },
 
@@ -105,8 +110,7 @@ const ClientesController = {
         ? res.status(400).send({ message: 'id de cliente no encontrado' })
         : res.status(200).send({ messsage: 'cliente borrado' })
     } catch (error) {
-      console.log(error)
-      res.status(500).send({ message: 'Por favor hable con el administrador' })
+      error500(error)
     }
   },
 }
