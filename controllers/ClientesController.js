@@ -8,29 +8,6 @@ const {
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-// const checkData = (collection, data, res) => {
-//   // comprueba que los datos obligatorios estén introducidos
-//   if (!data.Password && collection === 'Cliente')
-//     return res.status(400).send({ message: 'contraseña requerida' })
-//   if (!data.Nombre) return res.status(400).send({ message: 'nombre requerido' })
-//   if (!data.Email) return res.status(400).send({ message: 'email requerido' })
-//   if (!data.Calle && collection === 'Restaurante')
-//     return res.status(400).send({ message: 'Calle requerida' })
-//   if (!data.CP && collection === 'Restaurante')
-//     return res.status(400).send({ message: 'CP requerido' })
-//   if (!data.Ciudad && collection === 'Restaurante')
-//     return res.status(400).send({ message: 'Ciudad requerida' })
-//   if (!data.Provincia && collection === 'Restaurante')
-//     return res.status(400).send({ message: 'Provincia requerida' })
-// }
-
-// const checkEmailDuplicado = async (email, res) => {
-//   // comprueba que el email no esté ya utilizado
-//   const checkEmail = await Clientes.findOne({ Email: email })
-//   if (checkEmail === null) return checkEmail
-//   res.status(400).send({ message: 'email ya existente' })
-// }
-
 const ClientesController = {
   // GET - Obtener todos los clientes
   async getClientes(req, res) {
@@ -38,7 +15,7 @@ const ClientesController = {
       const clientes = await Clientes.find()
       res.status(200).send(clientes)
     } catch (error) {
-      error500(error)
+      error500(error, res)
     }
   },
 
@@ -54,7 +31,7 @@ const ClientesController = {
       }
       res.status(200).send(cliente)
     } catch (error) {
-      error500(error)
+      error500(error, res)
     }
   },
 
@@ -64,11 +41,11 @@ const ClientesController = {
       if (await checkData('Cliente', req.body, res)) return
       if ((await checkEmailDuplicado('Cliente', req.body.Email, res)) !== null)
         return
-      const password = bcrypt.hashSync(req.body.Password, 10)
-      const cliente = await Clientes.create({ ...req.body, password })
-      res.status(201).send({ message: 'usuario creado', cliente })
+      const Password = bcrypt.hashSync(req.body.Password, 10)
+      const cliente = await Clientes.create({ ...req.body, Password })
+      res.status(201).send({ message: 'cliente creado', cliente })
     } catch (error) {
-      error500(error)
+      error500(error, res)
     }
   },
 
@@ -80,7 +57,7 @@ const ClientesController = {
       if (checkID(clienteId, res)) return
       if (
         req.body.Email &&
-        (await checkEmailDuplicado(req.body.Email, res)) !== null
+        (await checkEmailDuplicado('Cliente', req.body.Email, res)) !== null
       )
         return
       const nuevoCliente = {
@@ -96,7 +73,7 @@ const ClientesController = {
         cliente: clienteActualizado,
       })
     } catch (error) {
-      error500(error)
+      error500(error, res)
     }
   },
 
@@ -110,7 +87,7 @@ const ClientesController = {
         ? res.status(400).send({ message: 'id de cliente no encontrado' })
         : res.status(200).send({ messsage: 'cliente borrado' })
     } catch (error) {
-      error500(error)
+      error500(error, res)
     }
   },
 }

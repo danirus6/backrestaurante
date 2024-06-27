@@ -1,6 +1,7 @@
 // importamos los modelos para usarlos en checkEmailDuplicado
 const Clientes = require('../models/Clientes')
 const Restaurantes = require('../models/Restaurantes')
+const Usuarios = require('../models/Usuarios')
 
 const validations = {
   checkID(id, res) {
@@ -9,7 +10,7 @@ const validations = {
       return res.status(401).send({ message: 'id erróneo' })
   },
 
-  error500(error) {
+  error500(error, res) {
     console.error(error)
     return res
       .status(500)
@@ -18,7 +19,10 @@ const validations = {
 
   checkData(collection, data, res) {
     // comprueba que los datos obligatorios estén introducidos
-    if (!data.Password && collection === 'Cliente')
+    if (
+      !data.Password &&
+      (collection === 'Cliente' || collection === 'Usuario')
+    )
       return res.status(400).send({ message: 'contraseña requerida' })
     if (!data.Nombre)
       return res.status(400).send({ message: 'nombre requerido' })
@@ -44,6 +48,9 @@ const validations = {
         break
       case 'Restaurante':
         model = Restaurantes
+        break
+      case 'Usuario':
+        model = Usuarios
         break
     }
     const checkEmail = await model.findOne({ Email: email })

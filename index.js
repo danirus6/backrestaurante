@@ -25,6 +25,7 @@ app.use(express.json())
 
 app.use('/clientes', require('./routes/clientes'))
 app.use('/restaurantes', require('./routes/restaurantes'))
+app.use('/usuarios', require('./routes/usuarios'))
 
 dbConnection()
 

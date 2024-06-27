@@ -12,7 +12,7 @@ const RestaurantesController = {
       const restaurantes = await Restaurantes.find()
       res.status(200).send(restaurantes)
     } catch (error) {
-      error500(error)
+      error500(error, res)
     }
   },
 
@@ -29,7 +29,7 @@ const RestaurantesController = {
       }
       res.status(200).send(restaurante)
     } catch (error) {
-      error500(error)
+      error500(error, res)
     }
   },
 
@@ -43,7 +43,7 @@ const RestaurantesController = {
       const restaurante = await Restaurantes.create({ ...req.body })
       res.status(201).send({ message: 'restaurante creado', restaurante })
     } catch (error) {
-      error500(error)
+      error500(error, res)
     }
   },
 }
