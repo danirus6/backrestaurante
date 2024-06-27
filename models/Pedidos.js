@@ -8,6 +8,9 @@ const PedidosSchema = new Schema({
     IdCliente: { type: ObjectId, ref: 'Clientes' },
     IdUsuario: { type: ObjectId, ref: 'Usuarios' },
     IdRestaurante: { type: ObjectId, ref: 'Restaurantes' },
+    PrecioTotal: {
+        type: Number, required: true
+    }
 });
 
 const Pedidos = mongoose.model('Pedidos', PedidosSchema);
