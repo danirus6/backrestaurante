@@ -46,6 +46,32 @@ const RestaurantesController = {
       error500(error, res)
     }
   },
+
+  async actualizarRestaurante(req, res) {
+    const restauranteId = req.params.id
+
+    try {
+      if (checkID(restauranteId, res)) return
+      if (
+        req.body.Email &&
+        (await checkEmailDuplicado('Restaurante', req.body.Email, res)) !== null
+      )
+        return
+      const nuevoRestaurante = {
+        ...req.body,
+      }
+      const restauranteActualizado = await Restaurantes.findByIdAndUpdate(
+        restauranteId,
+        nuevoRestaurante,
+        { new: true }
+      )
+      res
+        .status(200)
+        .send({ message: 'restaurante actualizado', restauranteActualizado })
+    } catch (error) {
+      error500(error, res)
+    }
+  },
 }
 
 module.exports = RestaurantesController
