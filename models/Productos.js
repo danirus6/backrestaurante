@@ -17,6 +17,10 @@ const ProductosSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  Cantidad: { //Cantidad de productos pedidos en la comanda
+    type: Number,
+    required: true,
+  },
   Imagen: {
     type: String,
     required: true,
