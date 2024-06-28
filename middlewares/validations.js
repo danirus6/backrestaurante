@@ -1,6 +1,6 @@
 // importamos los modelos para usarlos en checkEmailDuplicado
-const Clientes = require('../models/Clientes')
-const Restaurantes = require('../models/Restaurantes')
+const Clientes = require('../models/Customers')
+const Restaurantes = require('../models/Restaurants')
 
 const validations = {
   checkID(id, res) {

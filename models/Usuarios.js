@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.SchemaTypes.ObjectId
 const Schema = mongoose.Schema;
 
-const UsuariosSchema = new Schema({
-      Nombre: {
+const UsersSchema = new Schema({
+      Name: {
         type: String,
         required: true,
       },
@@ -20,15 +20,15 @@ const UsuariosSchema = new Schema({
       Token: {
         type: String,
       },
-      Confirmado: {
+      Confirmed: {
         type: String,
       },
-      IdRestaurante: { type: ObjectId, ref: 'Restaurantes' },
-      IdPedido: [{ type: ObjectId, ref: 'Pedidos' }],
+      IdRestaurant: { type: ObjectId, ref: 'Restaurants' },
+      IdOrder: [{ type: ObjectId, ref: 'Orders' }],
     },
     { timestamps: true }
 );
 
-const Usuarios = mongoose.model('Usuarios', UsuariosSchema);
+const Users = mongoose.model('Users', UsersSchema);
 
-module.exports = Usuarios;
+module.exports = Users;

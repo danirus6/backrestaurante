@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.SchemaTypes.ObjectId
 const Schema = mongoose.Schema;
 
-const RestaurantesSchema = new Schema({
-      Nombre: {
+const RestaurantsSchema = new Schema({
+      Name: {
         type: String,
         required: true,
       },
@@ -14,11 +14,11 @@ const RestaurantesSchema = new Schema({
         match: [/.+\@.+\..+/],
         unique: true,
       },
-      Telefono: {
+      Tlf: {
         type: Number,
         required: true,
       },
-      Calle: {
+      Street: {
         type: String,
         required: true,
       },
@@ -26,21 +26,21 @@ const RestaurantesSchema = new Schema({
         type: Number,
         required: true,
       },
-      Ciudad: {
+      City: {
         type: String,
         required: true,
       },
-      Provincia: {
+      Province: {
         type: String,
         required: true,
       },
-      IdUsuario: [{ type: ObjectId, ref: 'Usuarios' }],
-      IdMesa: [{ type: ObjectId, ref: 'Mesas' }],
-      IdProducto: [{ type: ObjectId, ref: 'Productos' }],
+      IdUser: [{ type: ObjectId, ref: 'Users' }],
+      IdTable: [{ type: ObjectId, ref: 'Tables' }],
+      IdProduct: [{ type: ObjectId, ref: 'Products' }],
     },
     { timestamps: true }
 );
 
-const Restaurantes = mongoose.model('Restaurantes', RestaurantesSchema);
+const Restaurants = mongoose.model('Restaurants', RestaurantsSchema);
 
-module.exports = Restaurantes;
+module.exports = Restaurants;

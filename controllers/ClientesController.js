@@ -1,4 +1,4 @@
-const Clientes = require('../models/Clientes')
+const Clientes = require('../models/Customers')
 const {
   checkID,
   error500,
