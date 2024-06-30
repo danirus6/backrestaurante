@@ -87,6 +87,11 @@ const UsuariosController = {
         (await checkEmailDuplicado('Usuario', req.body.Email, res)) !== null
       )
         return
+      // revisamos que hay token en la request, y que coincida con el usuario
+      if (!req.headers.authorization)
+        return res.status(401).send({ message: 'falta el token' })
+      if (checkTokenData('Usuario', usuarioId, req.headers.authorization, res))
+        return
       const nuevoUsuario = {
         ...req.body,
       }

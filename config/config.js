@@ -6,10 +6,7 @@ const MONGOURI = process.env.MONGO_URI
 
 const dbConnection = async () => {
   try {
-    await mongoose.connect(MONGOURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
+    await mongoose.connect(MONGOURI)
     console.log('Base de datos conectada con éxito')
   } catch (error) {
     console.error(error)
