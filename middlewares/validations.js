@@ -57,6 +57,22 @@ const validations = {
     if (checkEmail === null) return checkEmail
     return res.status(400).send({ message: 'email ya existente' })
   },
+
+  async checkTokenData(collection, id, token, res) {
+    let model
+    switch (collection) {
+      case 'Cliente':
+        model = Clientes
+        break
+      case 'Usuario':
+        model = Usuarios
+        break
+    }
+    // revisar que realmente el token corresponde al usuario logado,
+    const data = await model.findById(id)
+    if (data.Confirmado === 'false' || data.Token !== token)
+      return res.status(401).send({ message: `${collection} no autorizado` })
+  },
 }
 
 module.exports = validations
