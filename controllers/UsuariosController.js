@@ -45,7 +45,7 @@ const UsuariosController = {
         return
       const Password = bcrypt.hashSync(req.body.Password, 10)
       const usuario = await Usuarios.create({ ...req.body, Password })
-      const idToken = jwt.sign({ _id: usuario._id }, process.env.JWT_SECRET)
+      const idToken = jwt.sign({ _id: usuario._id }, JWT_SECRET)
       // revisar notas de middleware email.js
       // await sendEmail(req.body.Email, idToken)
       res.status(201).send({
@@ -72,6 +72,36 @@ const UsuariosController = {
         $set: { Confirmado: 'true' },
       })
       confirmEmail(res, 'usuarios')
+    } catch (error) {
+      error500(error, res)
+    }
+  },
+
+  async loginUsuario(req, res) {
+    try {
+      if (await checkData('Usuario', req.body, res)) return
+      const user = await Usuarios.findOne({ Email: req.body.Email })
+      if (!user)
+        return res.status(400).send({ message: 'email o password erróneos' })
+      if (user.Confirmado === 'false')
+        return res
+          .status(400)
+          .send({
+            message: 'por favor confirma el alta en el email que has recibido',
+          })
+      if (user.Token)
+        return res.status(400).send({ message: 'usuario ya logado' })
+
+      const checkPassword = bcrypt.compareSync(req.body.Password, user.Password)
+      if (checkPassword) {
+        const token = jwt.sign({ _id: user._id }, JWT_SECRET)
+        await Usuarios.findByIdAndUpdate(
+          user._id,
+          { Token: token },
+          { new: true }
+        )
+        res.status(400).send({ message: 'usuario logado correctamente' })
+      }
     } catch (error) {
       error500(error, res)
     }
